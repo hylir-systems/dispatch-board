@@ -12,8 +12,6 @@ const API_BASE_URL = isDev
   ? '' // 开发环境使用相对路径，通过 vite.config.ts 代理
   : (import.meta as any).env?.VITE_API_BASE_URL || '';
 
-
-
 /**
  * 获取看板航班分页数据（内部解包统一返回）
  * @param params 查询参数

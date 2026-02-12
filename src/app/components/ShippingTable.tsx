@@ -51,7 +51,12 @@ const SCROLL_SPEED = 1;
 // 触底阈值
 const BOTTOM_THRESHOLD = 50;
 
-export function ShippingTable({ orders, onRefresh, autoScroll = true, refreshKey }: ShippingTableProps) {
+export function ShippingTable({
+  orders,
+  onRefresh,
+  autoScroll = true,
+  refreshKey,
+}: ShippingTableProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<number | null>(null);
   const shouldScrollRef = useRef(true);
@@ -138,20 +143,40 @@ export function ShippingTable({ orders, onRefresh, autoScroll = true, refreshKey
     <div className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden flex flex-col h-full shadow-2xl">
       <div className="flex justify-between items-center p-4 border-b border-slate-800 bg-slate-800/30">
         <h3 className="font-semibold text-lg text-slate-200">发货明细</h3>
-        <span className="text-xs text-slate-500 bg-slate-800 px-2 py-1 rounded">共 {orders.length} 单</span>
+        <span className="text-xs text-slate-500 bg-slate-800 px-2 py-1 rounded">
+          共 {orders.length} 单
+        </span>
       </div>
 
-      <div ref={containerRef} onScroll={handleScroll} className="overflow-auto hide-scrollbar flex-1">
+      <div
+        ref={containerRef}
+        onScroll={handleScroll}
+        className="overflow-auto hide-scrollbar flex-1"
+      >
         <table className="w-full text-left border-collapse">
           <thead className="bg-slate-800/50 sticky top-0 z-10 backdrop-blur-md">
             <tr>
-              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider">单据号</th>
-              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider">类型</th>
-              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider">接收方</th>
-              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider">要求时间</th>
-              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider">发货状态</th>
-              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider text-center">回单</th>
-              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider">风险评估</th>
+              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider">
+                单据号
+              </th>
+              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider">
+                类型
+              </th>
+              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider">
+                接收方
+              </th>
+              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider">
+                要求时间
+              </th>
+              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider">
+                发货状态
+              </th>
+              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider text-center">
+                回单
+              </th>
+              <th className="p-4 text-xs font-medium text-slate-400 uppercase tracking-wider">
+                风险评估
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800/50">
@@ -160,15 +185,22 @@ export function ShippingTable({ orders, onRefresh, autoScroll = true, refreshKey
               const risk = riskConfig[order.risk];
               return (
                 <tr key={order.id} className="hover:bg-slate-800/30 transition-colors group">
-                  <td className="p-4 font-mono text-slate-300 font-medium group-hover:text-white">{order.id}</td>
+                  <td className="p-4 font-mono text-slate-300 font-medium group-hover:text-white">
+                    {order.id}
+                  </td>
                   <td className="p-4">
-                    <span className="px-2 py-1 rounded text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700">{order.type}</span>
+                    <span className="px-2 py-1 rounded text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700">
+                      {order.type}
+                    </span>
                   </td>
                   <td className="p-4 text-slate-400 text-sm">{order.receiver}</td>
                   <td className="p-4 font-mono text-slate-300">{order.requestTime}</td>
                   <td className="p-4">
-                    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium ${status.bg} ${status.color}`}>
-                      <status.icon size={14} />{status.label}
+                    <div
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium ${status.bg} ${status.color}`}
+                    >
+                      <status.icon size={14} />
+                      {status.label}
                     </div>
                   </td>
                   <td className="p-4 text-center">
@@ -176,11 +208,17 @@ export function ShippingTable({ orders, onRefresh, autoScroll = true, refreshKey
                       <span className="inline-flex items-center justify-center w-8 h-8 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">
                         <FileText size={16} />
                       </span>
-                    ) : <span className="text-slate-600">-</span>}
+                    ) : (
+                      <span className="text-slate-600">-</span>
+                    )}
                   </td>
                   <td className="p-4">
                     <div className={`flex items-center gap-2 ${risk.color}`}>
-                      {order.risk === 'none' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+                      {order.risk === 'none' ? (
+                        <CheckCircle2 size={16} />
+                      ) : (
+                        <AlertCircle size={16} />
+                      )}
                       <span className="text-sm">{risk.label}</span>
                     </div>
                   </td>

@@ -6,7 +6,12 @@ import { ShippingTable } from './components/ShippingTable';
 import { Trends } from './components/Trends';
 import { ReceiptWarning } from './components/ReceiptWarning';
 import { List, CheckCircle2, FileText, Clock, AlertTriangle } from 'lucide-react';
-import { fetchDispatchBoard, getInfoByFactoryCodeApi, type DispatchBoardFlightVO, type FactoryInfo } from './api';
+import {
+  fetchDispatchBoard,
+  getInfoByFactoryCodeApi,
+  type DispatchBoardFlightVO,
+  type FactoryInfo,
+} from './api';
 
 // 订单状态类型
 type OrderStatus = 'shipped' | 'pending' | 'delayed';
@@ -137,13 +142,16 @@ export default function App() {
   // 获取工厂信息
   const loadFactoryInfo = useCallback(async () => {
     try {
-      const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+      const urlParams =
+        typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
       // 支持两种参数名：factoryCode（驼峰）和 factorycode（全小写）
       const factoryCodeFromUrl = urlParams
         ? urlParams.get('factoryCode') || urlParams.get('factorycode') || null
         : null;
       const factoryCode =
-        (factoryCodeFromUrl && factoryCodeFromUrl.trim()) || (import.meta as any).env?.VITE_FACTORY_CODE || 'DEFAULT_FACTORY_CODE';
+        (factoryCodeFromUrl && factoryCodeFromUrl.trim()) ||
+        (import.meta as any).env?.VITE_FACTORY_CODE ||
+        'DEFAULT_FACTORY_CODE';
       const res = await getInfoByFactoryCodeApi(factoryCode);
       // 后端返回 factoryVO 对象（可能为 { factoryCode, factoryName, ... }）
       const info: FactoryInfo = (res as any)?.data ? (res as any).data : (res as any);
@@ -306,17 +314,21 @@ export default function App() {
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-1 min-h-0">
           {/* Left: Table (Span 2) */}
           <div className="lg:col-span-2 h-full min-h-[400px]">
-            <ShippingTable orders={orders} onRefresh={handleTableRefresh} refreshKey={tableRefreshKey} />
+            <ShippingTable
+              orders={orders}
+              onRefresh={handleTableRefresh}
+              refreshKey={tableRefreshKey}
+            />
           </div>
 
-            {/* Right: Trends & Insights (Span 1) */}
-            <div className="flex flex-col gap-3 h-full">
-              <div className="h-56 lg:h-1/2">
-                <Trends factoryCode={factoryCode} refreshKey={trendsRefreshKey} />
-              </div>
+          {/* Right: Trends & Insights (Span 1) */}
+          <div className="flex flex-col gap-3 h-full">
+            <div className="h-56 lg:h-1/2">
+              <Trends factoryCode={factoryCode} refreshKey={trendsRefreshKey} />
+            </div>
 
-              {/* Additional Widget: Completion Rate */}
-              <div className="flex-1 bg-slate-900/50 border border-slate-800 rounded-xl p-4 shadow-lg flex flex-col justify-center items-center">
+            {/* Additional Widget: Completion Rate */}
+            <div className="flex-1 bg-slate-900/50 border border-slate-800 rounded-xl p-4 shadow-lg flex flex-col justify-center items-center">
               <h3 className="text-base font-semibold text-slate-400 mb-3 self-start w-full border-b border-slate-800 pb-2">
                 今日完成率
               </h3>

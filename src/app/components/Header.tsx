@@ -11,7 +11,7 @@ function getLunarDate(date: Date): string {
     const solar = Solar.fromDate(date);
     const lunar = solar.getLunar();
     // 格式: 正月初一, 腊月廿三 等
-    const month = lunar.getMonthInChinese()+'月';
+    const month = lunar.getMonthInChinese() + '月';
     const day = lunar.getDayInChinese();
     return `农历${month}${day}`;
   } catch {
