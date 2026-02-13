@@ -11,7 +11,6 @@ export default defineConfig(({ mode }) => {
   const API_TARGET = env.VITE_API_TARGET || 'http://192.168.0.85:3680'
 
   return {
-    logLevel: 'warn',
   plugins: [
     react(),
     tailwindcss(),
@@ -22,11 +21,26 @@ export default defineConfig(({ mode }) => {
     },
   },
 
+  // 浏览器兼容性配置
+  esbuild: {
+    target: ['es2020', 'chrome90', 'firefox88', 'safari14', 'edge90'],
+    supported: {
+      'top-level-await': true,
+    },
+  },
+
+  css: {
+    postcss: {
+      plugins: [],
+    },
+  },
+
   assetsInclude: ['**/*.svg', '**/*.csv'],
 
     // 开发服务器配置
     server: {
       port: 3000,
+      cors: true, // 允许跨域
       proxy: {
         // MES 看板接口代理
         '/api/hylir-mes-center': {

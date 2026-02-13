@@ -3,8 +3,18 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all",
+    "chrome >= 80",
+    "firefox >= 78",
+    "safari >= 13",
+    "edge >= 80",
+    "android >= 80"
+  ],
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --max-warnings 20",
     "preview": "vite preview"
@@ -56,6 +66,7 @@
     "react-dnd-html5-backend": "16.0.1",
     "react-hook-form": "7.55.0",
     "react-popper": "2.3.0",
+    "react-router-dom": "7.6.0",
     "react-resizable-panels": "2.1.7",
     "react-responsive-masonry": "2.7.1",
     "react-slick": "0.31.0",
@@ -95,5 +106,6 @@
     "overrides": {
       "vite": "6.3.5"
     }
-  }
+  },
+  "packageManager": "pnpm@9.14.2+sha512.6e2baf77d06b9362294152c851c4f278ede37ab1eba3a55fda317a4a17b209f4dbb973fb250a77abc463a341fcb1f17f17cfa24091c4eb319cda0d9b84278387"
 }

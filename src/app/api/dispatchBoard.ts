@@ -1,7 +1,7 @@
 import type { DispatchBoardPageParams, FactoryInfo, DispatchBoardFetchResult } from './types';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isDev = (import.meta as any).DEV;
+// Vite 环境变量判断 - 开发模式
+const isDev = import.meta.env.DEV;
 
 /**
  * API 基础地址
@@ -10,7 +10,7 @@ const isDev = (import.meta as any).DEV;
  */
 const API_BASE_URL = isDev
   ? '' // 开发环境使用相对路径，通过 vite.config.ts 代理
-  : (import.meta as any).env?.VITE_API_BASE_URL || '';
+  : import.meta.env?.VITE_API_BASE_URL || '';
 
 /**
  * 获取看板航班分页数据（内部解包统一返回）

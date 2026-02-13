@@ -122,9 +122,9 @@ export function Trends({ factoryCode, refreshKey }: TrendsProps) {
       : 0;
 
   return (
-    <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 h-full flex flex-col shadow-lg">
+    <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-3 flex flex-col shadow-lg h-full overflow-hidden">
       {/* 标题和统计 */}
-      <div className="mb-4 flex justify-between items-start">
+      <div className="flex-none mb-2 flex justify-between items-start">
         <div>
           <h3 className="font-semibold text-lg text-slate-200">近7日订单趋势</h3>
           <div className="flex gap-4 mt-2 text-xs">
@@ -156,7 +156,7 @@ export function Trends({ factoryCode, refreshKey }: TrendsProps) {
       )}
 
       {/* 图表 */}
-      <div className="flex-1 w-full min-h-[200px]">
+      <div className="flex-1 w-full min-h-0" style={{ minHeight: '120px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />

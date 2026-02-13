@@ -1,7 +1,23 @@
 @import 'tailwindcss' source(none);
 @source '../**/*.{js,ts,jsx,tsx}';
 
-@import 'tw-animate-css';
+/* 电视横屏强制 */
+@media screen and (orientation: portrait) {
+  html {
+    transform: rotate(90deg);
+    transform-origin: left top;
+    width: 100vh;
+    height: 100vw;
+    overflow: hidden;
+  }
+}
+
+/* 电视优化 */
+@media (max-aspect-ratio: 16/9) {
+  html {
+    font-size: 16px;
+  }
+}
 
 /* 隐藏滚动条但保持滚动功能 */
 .hide-scrollbar {
@@ -13,8 +29,9 @@
   display: none;
 }
 
-/* 滚动公告遮罩效果 */
+/* 滚动公告遮罩效果 - 兼容旧浏览器 */
 .mask-image-linear-gradient {
-  mask-image: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
+  background: linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent);
 }
+
+@import 'tw-animate-css';
