@@ -1,7 +1,17 @@
-import { createBrowserRouter, type RouteObject, redirect } from 'react-router-dom';
+import { createBrowserRouter, redirect, type RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
-import { BoardRouteObject } from './routeTypes';
+import { BoardRouteObject } from './pages/routeTypes';
 import { Layout } from './components/Layout';
+
+// 404 页面
+const NotFound = () => (
+  <div className="h-screen bg-slate-950 text-slate-200 p-8 flex items-center justify-center">
+    <div className="text-center">
+      <h1 className="text-4xl font-bold text-red-500 mb-4">404</h1>
+      <p className="text-xl text-slate-500">页面不存在</p>
+    </div>
+  </div>
+);
 
 // 临时占位页面 - 未来扩展用
 const PlaceholderPage = ({ name }: { name: string }) => (
@@ -67,10 +77,17 @@ export const router = createBrowserRouter([
         index: true,
         loader: () => redirect('/dispatch'),
       },
-      ...routes,
+      ...(routes as RouteObject[]),
+      {
+        path: '*',
+        element: <NotFound />,
+      },
     ],
+    errorElement: <NotFound />,
   },
-]);
+], {
+  basename: '/',
+});
 
 // 导出路由配置供菜单使用
 export { routes };

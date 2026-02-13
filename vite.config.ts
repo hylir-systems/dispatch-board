@@ -39,6 +39,7 @@ export default defineConfig(({ mode }) => {
 
     // 开发服务器配置
     server: {
+      host: '0.0.0.0',
       port: 3000,
       cors: true, // 允许跨域
       proxy: {
@@ -99,6 +100,12 @@ export default defineConfig(({ mode }) => {
           },
         },
       },
+    },
+
+    // Preview 服务器配置
+    preview: {
+      host: '0.0.0.0',
+      port: 4173,
     },
   }
 })

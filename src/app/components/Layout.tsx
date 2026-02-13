@@ -94,13 +94,15 @@ export function Layout() {
           {routes
             .filter((route) => route.showInMenu !== false)
             .map((route) => {
-              const Icon = route.icon ? iconMap[route.icon] || LayoutDashboard : LayoutDashboard;
-              const isActive = location.pathname === route.path;
+              const iconKey = route.icon as keyof typeof iconMap;
+              const Icon = route.icon ? iconMap[iconKey] || LayoutDashboard : LayoutDashboard;
+              const routePath = route.path || '/';
+              const isActive = location.pathname === routePath;
 
               return (
-                <li key={route.path}>
+                <li key={routePath}>
                   <button
-                    onClick={() => navigate(route.path!)}
+                    onClick={() => navigate(routePath)}
                     className={cn(
                       'w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200',
                       isActive

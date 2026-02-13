@@ -32,6 +32,7 @@ function Badge({
   const Comp = asChild ? Slot : 'span';
 
   return (
+    // @ts-ignore - Slot component ref type incompatibility with React 18
     <Comp data-slot="badge" className={cn(badgeVariants({ variant }), className)} {...props} />
   );
 }

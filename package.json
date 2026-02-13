@@ -17,7 +17,7 @@
     "dev": "vite --host",
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --max-warnings 20",
-    "preview": "vite preview"
+    "preview": "vite preview --host"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

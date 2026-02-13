@@ -45,6 +45,7 @@ function Button({
   const Comp = asChild ? Slot : 'button';
 
   return (
+    // @ts-ignore - Slot component ref type incompatibility with React 18
     <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}

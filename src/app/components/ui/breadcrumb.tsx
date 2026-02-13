@@ -41,6 +41,7 @@ function BreadcrumbLink({
   const Comp = asChild ? Slot : 'a';
 
   return (
+    // @ts-ignore - Slot component ref type incompatibility with React 18
     <Comp
       data-slot="breadcrumb-link"
       className={cn('hover:text-foreground transition-colors', className)}

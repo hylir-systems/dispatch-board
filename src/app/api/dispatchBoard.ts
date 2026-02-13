@@ -1,50 +1,45 @@
-import type { DispatchBoardPageParams, FactoryInfo, DispatchBoardFetchResult } from './types';
-
-// Vite 环境变量判断 - 开发模式
-const isDev = import.meta.env.DEV;
+import type { DispatchBoardPageParams, FactoryInfo, DispatchBoardFetchResult, DispatchBoardFlightVO } from './types';
+import { fetchHttp } from '../utils/fetch';
 
 /**
- * API 基础地址
- * 开发环境：使用相对路径（通过 Vite 代理）
- * 生产环境：需要配置完整的 API 地址
+ * API 请求说明：
+ * 
+ * 统一使用相对路径，通过代理服务器转发请求：
+ * - 开发环境 (npm run dev): Vite 代理 → http://192.168.0.85:3680
+ * - 生产环境 (Nginx):      Nginx 代理 → http://117.143.214.90:3680
+ * 
+ * 请求路径示例: /api/hylir-mes-center/...
  */
-const API_BASE_URL = isDev
-  ? '' // 开发环境使用相对路径，通过 vite.config.ts 代理
-  : import.meta.env?.VITE_API_BASE_URL || '';
 
 /**
- * 获取看板航班分页数据（内部解包统一返回）
+ * 获取看板航班分页数据
  * @param params 查询参数
  * @returns 分页结果
  */
 export async function fetchDispatchBoard(
   params: DispatchBoardPageParams
 ): Promise<DispatchBoardFetchResult> {
-  const url = `${API_BASE_URL}/api/hylir-mes-center/api/v1/integration/chery/board/dispatch/list`;
+  const url = `/api/hylir-mes-center/api/v1/integration/chery/board/dispatch/list`;
 
   try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(params),
-    });
+    const data = await fetchHttp.post<{
+      content?: DispatchBoardFlightVO[];
+      items?: DispatchBoardFlightVO[];
+      totalElements?: number;
+      total?: number;
+      number: number;
+      size: number;
+      totalPages: number;
+      numberOfElements: number;
+    }>(url, params);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    // 后端统一返回结构: { code, msg, data: {...} }，解包取出 data
-    const pageData = result?.data || {};
     return {
-      content: pageData.content || pageData.items || [],
-      totalElements: pageData.totalElements || pageData.total || 0,
-      number: pageData.number || 0,
-      size: pageData.size || 0,
-      totalPages: pageData.totalPages || 0,
-      numberOfElements: pageData.numberOfElements || 0,
+      content: data?.content || data?.items || [],
+      totalElements: data?.totalElements || data?.total || 0,
+      number: data?.number || 0,
+      size: data?.size || 0,
+      totalPages: data?.totalPages || 0,
+      numberOfElements: data?.numberOfElements || 0,
     };
   } catch (error) {
     console.error('获取看板数据失败:', error);
@@ -58,21 +53,10 @@ export async function fetchDispatchBoard(
  * @returns 工厂信息
  */
 export async function getInfoByFactoryCodeApi(factoryCode: string): Promise<FactoryInfo> {
-  const url = `${API_BASE_URL}/api/hylir-masterdata-center/api/v1/manage/factory/getInfoByFactoryCode?factoryCode=${encodeURIComponent(factoryCode)}`;
+  const url = `/api/hylir-masterdata-center/api/v1/manage/factory/getInfoByFactoryCode?factoryCode=${encodeURIComponent(factoryCode)}`;
 
   try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return await response.json();
+    return await fetchHttp.get<FactoryInfo>(url);
   } catch (error) {
     console.error('获取工厂信息失败:', error);
     throw error;
