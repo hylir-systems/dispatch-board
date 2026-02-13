@@ -62,18 +62,19 @@ export function DispatchPage() {
   // 有回单但未发货的单据数量
   const [pendingWithReceiptCount, setPendingWithReceiptCount] = useState(0);
 
+  // 常量定义
+  const NO_DATA_REFRESH_INTERVAL = 5 * 60 * 1000; // 无数据时5分钟刷新
+
   // 状态管理
   const [_loading, setLoading] = useState(true);
   const [lastUpdateTime, setLastUpdateTime] = useState('');
-  const [refreshCountdown, setRefreshCountdown] = useState(60);
   const [factoryName, setFactoryName] = useState('');
   const [factoryCode, setFactoryCode] = useState('');
   const [tableRefreshKey, setTableRefreshKey] = useState(0);
   const [trendsRefreshKey, setTrendsRefreshKey] = useState(0);
 
-  // 刷新定时器
+  // 刷新定时器（仅无数据时使用）
   const refreshTimerRef = useRef<number | null>(null);
-  const countdownTimerRef = useRef<number | null>(null);
 
   // 格式化时间显示
   const formatTime = (timeStr?: string): string => {
@@ -170,7 +171,7 @@ export function DispatchPage() {
 
       const now = Date.now();
       // 查询时间范围：当前时间前后8小时
-      const lastRecRequireTimeStart = new Date(now - 8 * 60 * 60 * 1000).toISOString();
+      const lastRecRequireTimeStart = new Date(now - 72 * 60 * 60 * 1000).toISOString();
       const lastRecRequireTimeEnd = new Date(now + 8 * 60 * 60 * 1000).toISOString();
 
       const params = {
@@ -206,6 +207,24 @@ export function DispatchPage() {
 
       setPendingWithReceiptCount(pendingWithReceipt);
 
+      // 根据是否有数据调整刷新策略
+      const hasData = transformedOrders.length > 0;
+      if (!hasData) {
+        // 无数据时，5分钟刷新
+        if (refreshTimerRef.current) {
+          clearInterval(refreshTimerRef.current);
+        }
+        refreshTimerRef.current = window.setInterval(() => {
+          loadData();
+        }, NO_DATA_REFRESH_INTERVAL);
+      } else {
+        // 有数据时，不启动自动刷新，由表格触底控制
+        if (refreshTimerRef.current) {
+          clearInterval(refreshTimerRef.current);
+          refreshTimerRef.current = null;
+        }
+      }
+
       // 更新时间
       const nowTime = new Date();
       setLastUpdateTime(
@@ -227,32 +246,13 @@ export function DispatchPage() {
     // 加载工厂信息
     loadFactoryInfo();
 
-    // 初始加载数据
+    // 初始加载数据（根据是否有数据决定刷新策略）
     loadData();
-
-    // 启动刷新定时器（每60秒刷新一次）
-    refreshTimerRef.current = window.setInterval(() => {
-      loadData();
-      setRefreshCountdown(60);
-    }, 60000);
-
-    // 倒计时显示更新
-    countdownTimerRef.current = window.setInterval(() => {
-      setRefreshCountdown((prev) => {
-        if (prev <= 1) {
-          return 60;
-        }
-        return prev - 1;
-      });
-    }, 1000);
 
     // 清理
     return () => {
       if (refreshTimerRef.current) {
         clearInterval(refreshTimerRef.current);
-      }
-      if (countdownTimerRef.current) {
-        clearInterval(countdownTimerRef.current);
       }
     };
   }, [loadFactoryInfo, loadData]);
@@ -269,12 +269,13 @@ export function DispatchPage() {
   }, [loadData]);
 
   return (
-    <div className="h-full flex flex-col p-4 xl:p-6 overflow-hidden">
-      <div className="w-full flex flex-col min-h-0">
+    <div className="flex flex-col h-full min-h-0 p-4 xl:p-6 overflow-hidden">
+      {/* 顶部区域: Header + Metrics + Alert + ReceiptWarning */}
+      <div className="flex-none">
         <Header factoryName={factoryName} />
 
         {/* Top Metrics Row */}
-        <div className="grid grid-cols-5 gap-3 mb-2 shrink-0">
+        <div className="grid grid-cols-5 gap-3 mb-2">
           <MetricCard title="今日总单" value={summary.totalCount} icon={List} color="blue" />
           <MetricCard
             title="已发货"
@@ -298,69 +299,69 @@ export function DispatchPage() {
         <AlertBanner alerts={alerts} />
 
         {/* Receipt Warning */}
-        <div className="mb-1 shrink-0">
+        <div className="mb-1">
           <ReceiptWarning
             receiptCount={summary.receiptCount}
             deliveredCount={summary.deliveredCount}
             pendingWithReceiptCount={pendingWithReceiptCount}
           />
         </div>
+      </div>
 
-        {/* Main Content Area */}
-        <div className="flex-1 grid grid-cols-3 gap-1 min-h-0">
-          {/* Left: Table (Span 2) */}
-          <div className="col-span-2 flex flex-col min-h-0">
-            <ShippingTable
-              orders={orders}
-              onRefresh={handleTableRefresh}
-              refreshKey={tableRefreshKey}
-            />
+      {/* Main Content Area: 动态计算高度，填满剩余空间 */}
+      <div className="flex-1 grid grid-cols-3 gap-1 min-h-0">
+        {/* Left: Table (Span 2) */}
+        <div className="col-span-2 flex flex-col min-h-0">
+          <ShippingTable
+            orders={orders}
+            onRefresh={handleTableRefresh}
+            refreshKey={tableRefreshKey}
+          />
+        </div>
+
+        {/* Right: Trends & Completion Rate (Span 1) */}
+        <div className="flex flex-col gap-2 min-h-0">
+          {/* Trends Chart */}
+          <div className="flex-1 min-h-0">
+            <Trends factoryCode={factoryCode} refreshKey={trendsRefreshKey} />
           </div>
 
-          {/* Right: Trends & Completion Rate (Span 1) */}
-          <div className="flex flex-col gap-2 min-h-0">
-            {/* Trends Chart */}
-            <div className="flex-1 min-h-0">
-              <Trends factoryCode={factoryCode} refreshKey={trendsRefreshKey} />
-            </div>
-
-            {/* Completion Rate */}
-            <div className="flex-1 min-h-0 bg-slate-900/50 border border-slate-800 rounded-xl p-4 shadow-lg flex flex-col">
-              <h3 className="text-sm font-semibold text-slate-400 mb-2 self-start border-b border-slate-800 pb-1">
-                今日完成率
-              </h3>
-              <div className="flex-1 flex items-center justify-center gap-6 min-h-0">
-                {/* 巨大的环形图 */}
-                <div className="relative w-48 h-48 flex items-center justify-center">
-                  <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="#1e293b" strokeWidth="6" />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="45"
-                      fill="none"
-                      stroke="#14b8a6"
-                      strokeWidth="6"
-                      strokeDasharray="282.7"
-                      strokeDashoffset={282.7 * (1 - completionRate / 100)}
-                      className="transition-all duration-1000 ease-out"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-5xl font-bold text-white leading-none">{completionRate}%</span>
-                    <span className="text-sm text-slate-500 mt-1">目标 98%</span>
-                  </div>
+          {/* Completion Rate */}
+          <div className="flex-1 min-h-0 bg-slate-900/50 border border-slate-800 rounded-xl p-4 shadow-lg flex flex-col">
+            <h3 className="text-sm font-semibold text-slate-400 mb-2 self-start border-b border-slate-800 pb-1">
+              今日完成率
+            </h3>
+            <div className="flex-1 flex items-center justify-center gap-6 min-h-0">
+              {/* 巨大的环形图 */}
+              <div className="relative w-48 h-48 flex items-center justify-center">
+                <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="#1e293b" strokeWidth="6" />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="45"
+                    fill="none"
+                    stroke="#14b8a6"
+                    strokeWidth="6"
+                    strokeDasharray="282.7"
+                    strokeDashoffset={282.7 * (1 - completionRate / 100)}
+                    className="transition-all duration-1000 ease-out"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-5xl font-bold text-white leading-none">{completionRate}%</span>
+                  <span className="text-sm text-slate-500 mt-1">目标 98%</span>
                 </div>
-                {/* 次要信息 - 右侧小字 */}
-                <div className="flex flex-col gap-6 text-sm">
-                  <div className="text-slate-500">
-                    <div className="text-xs text-slate-600">距班次结束</div>
-                    <div className="text-lg font-medium text-slate-400">4 小时</div>
-                  </div>
-                  <div className="text-xs text-slate-600 font-mono">
-                    {lastUpdateTime || '--:--:--'} / {refreshCountdown}s
-                  </div>
+              </div>
+              {/* 次要信息 - 右侧小字 */}
+              <div className="flex flex-col gap-6 text-sm">
+                <div className="text-slate-500">
+                  <div className="text-xs text-slate-600">距班次结束</div>
+                  <div className="text-lg font-medium text-slate-400">4 小时</div>
+                </div>
+                <div className="text-xs text-slate-600 font-mono">
+                  {lastUpdateTime || '--:--'}
                 </div>
               </div>
             </div>
@@ -370,5 +371,3 @@ export function DispatchPage() {
     </div>
   );
 }
-
-
