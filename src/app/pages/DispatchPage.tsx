@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Header } from '../components/Header';
 import { MetricCard } from '../components/MetricCard';
-import { AlertBanner } from '../components/AlertBanner';
-import { ShippingTable } from '../components/ShippingTable';
-import { Trends } from '../components/Trends';
-import { ReceiptWarning } from '../components/ReceiptWarning';
+import { AlertBanner } from '../components/dispatch/AlertBanner';
+import { ShippingTable } from '../components/dispatch/ShippingTable';
+import { Trends } from '../components/dispatch/Trends';
+import { ReceiptWarning } from '../components/dispatch/ReceiptWarning';
 import { List, CheckCircle2, FileText, Clock, AlertTriangle } from 'lucide-react';
 import {
   fetchDispatchBoard,

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { fetchDispatchBoard } from '../api/dispatchBoard';
+import { fetchDispatchBoard } from '../../api/dispatchBoard';
 
 // 星期几映射
 const WEEKDAY_MAP = ['日', '一', '二', '三', '四', '五', '六'];

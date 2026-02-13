@@ -3,6 +3,7 @@ import { Solar } from 'lunar-javascript';
 
 interface HeaderProps {
   factoryName?: string;
+  title?: string;
 }
 
 // 获取农历日期
@@ -19,7 +20,7 @@ function getLunarDate(date: Date): string {
   }
 }
 
-export function Header({ factoryName }: HeaderProps) {
+export function Header({ factoryName, title = 'JIT/JIS 发货看板' }: HeaderProps) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export function Header({ factoryName }: HeaderProps) {
     <div className="flex justify-between items-center py-2 px-4 mb-2">
       <div className="flex items-center gap-4">
         <div className="bg-teal-600 px-4 py-2 rounded-lg shadow-[0_0_15px_rgba(20,184,166,0.3)]">
-          <h1 className="text-2xl font-bold text-white tracking-wider">JIT/JIS 发货看板</h1>
+          <h1 className="text-2xl font-bold text-white tracking-wider">{title}</h1>
         </div>
         {factoryName && (
           <div className="bg-teal-900/50 text-teal-400 border border-teal-700 px-3 py-1 rounded text-xs flex flex-col items-center">
