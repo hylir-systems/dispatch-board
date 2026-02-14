@@ -1,7 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { DayPicker } from 'react-day-picker';
 
 import { cn } from './utils';
@@ -57,11 +58,13 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn('size-4', className)} {...props} />
+        // @ts-expect-error - IconLeft expects different props but we pass FontAwesomeIcon compatible ones
+        IconLeft: ({ className: _className, ...props }) => (
+          <FontAwesomeIcon icon={faChevronLeft} className={cn('size-4', _className)} />
         ),
-        IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn('size-4', className)} {...props} />
+        // @ts-expect-error - IconRight expects different props but we pass FontAwesomeIcon compatible ones
+        IconRight: ({ className: _className, ...props }) => (
+          <FontAwesomeIcon icon={faChevronRight} className={cn('size-4', _className)} />
         ),
       }}
       {...props}

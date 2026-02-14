@@ -1,13 +1,13 @@
 /**
  * 统一 API 请求工具
- * 
+ *
  * 功能：
  * - GET 请求自动添加时间戳 `_t=` 防止浏览器缓存
  * - 自动解包后端返回的 { code, msg, data } 结构
  * - 统一错误处理
  * - 失败自动重试
  * - 支持 Base URL
- * 
+ *
  * 使用方式：
  * import { fetchHttp } from '@/app/utils/fetch';
  * const data = await fetchHttp.get('/api/users');
@@ -39,13 +39,13 @@ export interface FetchOptions extends RequestInit {
  */
 function getTokenFromCookie(): string | null {
   if (typeof document === 'undefined') return null; // SSR 保护
-  
+
   const name = 'token=';
   const decodedCookie = decodeURIComponent(document.cookie);
   const cookieArray = decodedCookie.split(';');
-  
+
   for (let i = 0; i < cookieArray.length; i++) {
-    let cookie = cookieArray[i].trim();
+    const cookie = cookieArray[i].trim();
     if (cookie.indexOf(name) === 0) {
       return cookie.substring(name.length);
     }
@@ -105,7 +105,12 @@ class FetchHttp {
    */
   private buildUrl(url: string, baseUrl?: string): string {
     const finalBaseUrl = baseUrl || this.baseUrl;
-    if (finalBaseUrl && !url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('//')) {
+    if (
+      finalBaseUrl &&
+      !url.startsWith('http://') &&
+      !url.startsWith('https://') &&
+      !url.startsWith('//')
+    ) {
       return `${finalBaseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
     }
     return url;
@@ -114,12 +119,9 @@ class FetchHttp {
   /**
    * 统一请求核心方法（包含重试逻辑）
    */
-  private async request<T = unknown>(
-    url: string,
-    options: FetchOptions = {}
-  ): Promise<T> {
+  private async request<T = unknown>(url: string, options: FetchOptions = {}): Promise<T> {
     const requestId = generateRequestId();
-    
+
     // URL 校验
     if (!url || typeof url !== 'string') {
       throw new FetchError('请求 URL 不能为空', undefined, undefined, requestId);
@@ -140,7 +142,7 @@ class FetchHttp {
     } = options;
 
     // 处理 Token
-    let authHeaders: Record<string, string> = {};
+    const authHeaders: Record<string, string> = {};
     if (withToken) {
       const token = getTokenFromCookie();
       if (token) {
@@ -157,7 +159,7 @@ class FetchHttp {
 
     // 重试循环
     let lastError: Error | unknown;
-    
+
     for (let attempt = 0; attempt <= retry; attempt++) {
       // 创建超时 AbortController
       const controller = new AbortController();
@@ -208,7 +210,7 @@ class FetchHttp {
             const text = await response.text();
             return text as unknown as T;
           }
-          return await response.json() as T;
+          return (await response.json()) as T;
         }
 
         const result = await response.json();
@@ -226,7 +228,8 @@ class FetchHttp {
           }
 
           const code = result.code;
-          const isSuccess = code === 0 || code === 200 || code === '0' || code === '200' || code === 'success';
+          const isSuccess =
+            code === 0 || code === 200 || code === '0' || code === '200' || code === 'success';
           if (!isSuccess) {
             throw new FetchError(
               result.msg || `API Error: ${code}`,
@@ -241,7 +244,7 @@ class FetchHttp {
         return result as T;
       } catch (error) {
         clearTimeout(timeoutId);
-        
+
         // 如果是 FetchError 且不是网络错误，不重试
         if (error instanceof FetchError && !error.isNetworkError) {
           throw error;
@@ -254,7 +257,9 @@ class FetchHttp {
           // 判断是否需要重试（网络错误或 5xx 错误）
           const isRetryable = this.isRetryableError(error);
           if (isRetryable) {
-            console.warn(`[${requestId}] 请求失败，${retryDelay}ms 后进行第 ${attempt + 2}/${retry + 1} 次重试...`);
+            console.warn(
+              `[${requestId}] 请求失败，${retryDelay}ms 后进行第 ${attempt + 2}/${retry + 1} 次重试...`
+            );
             await this.sleep(retryDelay);
             continue;
           }
@@ -271,7 +276,7 @@ class FetchHttp {
           // 其他错误包装为 FetchError
           throw new FetchError(error.message, undefined, undefined, requestId, true);
         }
-        
+
         throw new FetchError('未知错误', undefined, undefined, requestId, true);
       }
     }
@@ -290,7 +295,7 @@ class FetchHttp {
     if (error instanceof FetchError) {
       return error.isNetworkError;
     }
-    
+
     if (error instanceof Error) {
       // 网络错误、超时等
       return (
@@ -310,7 +315,7 @@ class FetchHttp {
    * 延迟函数
    */
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -318,7 +323,12 @@ class FetchHttp {
    * - 过滤 null 和 undefined
    * - 数组使用 repeat 格式（key=1&key=2）
    */
-  private serializeParams(params: Record<string, string | number | boolean | undefined | (string | number | boolean)[] | null>): string {
+  private serializeParams(
+    params: Record<
+      string,
+      string | number | boolean | undefined | (string | number | boolean)[] | null
+    >
+  ): string {
     if (!params || typeof params !== 'object') {
       return '';
     }
@@ -332,7 +342,7 @@ class FetchHttp {
 
       if (Array.isArray(value)) {
         // 过滤数组中的 null 和 undefined
-        const filteredItems = value.filter(item => item !== null && item !== undefined);
+        const filteredItems = value.filter((item) => item !== null && item !== undefined);
         // 数组：key=1&key=2 格式
         filteredItems.forEach((item) => {
           parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(item))}`);
@@ -350,11 +360,14 @@ class FetchHttp {
    */
   async get<T = unknown>(
     url: string,
-    params?: Record<string, string | number | boolean | undefined | (string | number | boolean)[] | null>,
+    params?: Record<
+      string,
+      string | number | boolean | undefined | (string | number | boolean)[] | null
+    >,
     options?: Omit<FetchOptions, 'method'>
   ): Promise<T> {
     let requestUrl = url;
-    
+
     // 序列化查询参数
     if (params) {
       const queryString = this.serializeParams(params);
@@ -419,10 +432,7 @@ class FetchHttp {
   /**
    * DELETE 请求 - 删除资源
    */
-  async delete<T = unknown>(
-    url: string,
-    options?: Omit<FetchOptions, 'method'>
-  ): Promise<T> {
+  async delete<T = unknown>(url: string, options?: Omit<FetchOptions, 'method'>): Promise<T> {
     return this.request<T>(url, {
       method: 'DELETE',
       ...options,

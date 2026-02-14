@@ -1,5 +1,5 @@
-// React default import not required with the new JSX runtime
-import { AlertTriangle, Clock } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationTriangle, faClock } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'motion/react';
 
 interface AlertBannerProps {
@@ -17,7 +17,7 @@ export function AlertBanner({ alerts }: AlertBannerProps) {
     <div className="mb-2 rounded-lg overflow-hidden border border-red-900/50 bg-red-950/20">
       <div className="flex items-center px-3 py-2 bg-red-900/20 text-red-200">
         <div className="flex items-center gap-2 font-bold text-red-400 mr-4 z-10 bg-red-950/20 pr-3">
-          <AlertTriangle size={18} className="animate-pulse" />
+          <FontAwesomeIcon icon={faExclamationTriangle} className="animate-pulse" />
           <span>延误预警</span>
         </div>
 
@@ -36,7 +36,7 @@ export function AlertBanner({ alerts }: AlertBannerProps) {
                 <span className="font-mono text-red-300 font-bold">{alert.id}</span>
                 <span className="font-semibold text-red-200">{alert.message}</span>
                 <span className="flex items-center gap-1 text-xs opacity-70">
-                  <Clock size={12} /> {alert.timestamp}
+                  <FontAwesomeIcon icon={faClock} size="xs" /> {alert.timestamp}
                 </span>
               </div>
             ))}

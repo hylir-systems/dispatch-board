@@ -1,10 +1,10 @@
-// React default import not required with the new JSX runtime
-import { LucideIcon } from 'lucide-react';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface MetricCardProps {
   title: string;
   value: number | string;
-  icon: LucideIcon;
+  icon: IconProp;
   color: 'blue' | 'green' | 'teal' | 'gray' | 'red';
   subtext?: string;
 }
@@ -25,13 +25,13 @@ const iconBgMap = {
   red: 'bg-red-500/20',
 };
 
-export function MetricCard({ title, value, icon: Icon, color, subtext }: MetricCardProps) {
+export function MetricCard({ title, value, icon, color, subtext }: MetricCardProps) {
   return (
     <div
       className={`flex items-center p-4 rounded-xl border ${colorMap[color]} backdrop-blur-sm shadow-lg transition-transform hover:scale-105 duration-200`}
     >
       <div className={`p-3 rounded-lg ${iconBgMap[color]} mr-4`}>
-        <Icon size={28} />
+        <FontAwesomeIcon icon={icon} size="lg" />
       </div>
       <div>
         <div className="text-sm font-medium opacity-80 mb-1">{title}</div>

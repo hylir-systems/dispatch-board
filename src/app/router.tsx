@@ -68,26 +68,29 @@ const routes: BoardRouteObject[] = [
 ];
 
 // 创建路由器
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <Layout />,
+      children: [
+        {
+          index: true,
+          loader: () => redirect('/dispatch'),
+        },
+        ...(routes as RouteObject[]),
+        {
+          path: '*',
+          element: <NotFound />,
+        },
+      ],
+      errorElement: <NotFound />,
+    },
+  ],
   {
-    path: '/',
-    element: <Layout />,
-    children: [
-      {
-        index: true,
-        loader: () => redirect('/dispatch'),
-      },
-      ...(routes as RouteObject[]),
-      {
-        path: '*',
-        element: <NotFound />,
-      },
-    ],
-    errorElement: <NotFound />,
-  },
-], {
-  basename: '/',
-});
+    basename: '/hylir-tv-dashboard',
+  }
+);
 
 // 导出路由配置供菜单使用
 export { routes };

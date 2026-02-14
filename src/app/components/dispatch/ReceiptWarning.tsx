@@ -1,5 +1,5 @@
-// React default import not required with the new JSX runtime
-import { AlertTriangle } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'motion/react';
 
 interface ReceiptWarningProps {
@@ -27,7 +27,7 @@ export function ReceiptWarning({
     <div className="mb-2 rounded-lg overflow-hidden border border-red-900/50 bg-red-950/20">
       <div className="flex items-center px-3 py-2 bg-red-900/20 text-red-200">
         <div className="flex items-center gap-2 font-bold text-red-400 mr-4 z-10 bg-red-950/20 pr-3">
-          <AlertTriangle size={18} className="animate-pulse" />
+          <FontAwesomeIcon icon={faExclamationTriangle} className="animate-pulse" />
           <span>回单异常</span>
         </div>
 

@@ -5,7 +5,13 @@ import { AlertBanner } from '../components/dispatch/AlertBanner';
 import { ShippingTable } from '../components/dispatch/ShippingTable';
 import { Trends } from '../components/dispatch/Trends';
 import { ReceiptWarning } from '../components/dispatch/ReceiptWarning';
-import { List, CheckCircle2, FileText, Clock, AlertTriangle } from 'lucide-react';
+import {
+  faList,
+  faCheckCircle,
+  faFileAlt,
+  faClock,
+  faExclamationTriangle,
+} from '@fortawesome/free-solid-svg-icons';
 import {
   fetchDispatchBoard,
   getInfoByFactoryCodeApi,
@@ -276,23 +282,28 @@ export function DispatchPage() {
 
         {/* Top Metrics Row */}
         <div className="grid grid-cols-5 gap-3 mb-2">
-          <MetricCard title="今日总单" value={summary.totalCount} icon={List} color="blue" />
+          <MetricCard title="今日总单" value={summary.totalCount} icon={faList} color="blue" />
           <MetricCard
             title="已发货"
             value={summary.deliveredCount}
-            icon={CheckCircle2}
+            icon={faCheckCircle}
             color="green"
             subtext={`${summary.totalCount > 0 ? Math.round((summary.deliveredCount / summary.totalCount) * 100) : 0}%`}
           />
           <MetricCard
             title="回单总数"
             value={summary.receiptCount}
-            icon={FileText}
+            icon={faFileAlt}
             color="teal"
             subtext={`${summary.deliveredCount > 0 ? Math.round((summary.receiptCount / summary.deliveredCount) * 100) : 0}%`}
           />
-          <MetricCard title="待发货" value={summary.pendingCount} icon={Clock} color="gray" />
-          <MetricCard title="延误" value={summary.delayedCount} icon={AlertTriangle} color="red" />
+          <MetricCard title="待发货" value={summary.pendingCount} icon={faClock} color="gray" />
+          <MetricCard
+            title="延误"
+            value={summary.delayedCount}
+            icon={faExclamationTriangle}
+            color="red"
+          />
         </div>
 
         {/* Alert Banner */}
@@ -350,7 +361,9 @@ export function DispatchPage() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-5xl font-bold text-white leading-none">{completionRate}%</span>
+                  <span className="text-5xl font-bold text-white leading-none">
+                    {completionRate}%
+                  </span>
                   <span className="text-sm text-slate-500 mt-1">目标 98%</span>
                 </div>
               </div>
@@ -360,9 +373,7 @@ export function DispatchPage() {
                   <div className="text-xs text-slate-600">距班次结束</div>
                   <div className="text-lg font-medium text-slate-400">4 小时</div>
                 </div>
-                <div className="text-xs text-slate-600 font-mono">
-                  {lastUpdateTime || '--:--'}
-                </div>
+                <div className="text-xs text-slate-600 font-mono">{lastUpdateTime || '--:--'}</div>
               </div>
             </div>
           </div>

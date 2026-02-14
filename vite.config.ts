@@ -11,7 +11,8 @@ export default defineConfig(({ mode }) => {
   const API_TARGET = env.VITE_API_TARGET || 'http://192.168.0.85:3680'
 
   return {
-  plugins: [
+    base: '/hylir-tv-dashboard',
+    plugins: [
     react(),
     tailwindcss(),
   ],
@@ -96,7 +97,7 @@ export default defineConfig(({ mode }) => {
           assetFileNames: '[ext]/[name]-[hash].[ext]',
           manualChunks: {
             vendor: ['react', 'react-dom'],
-            ui: ['lucide-react'],
+            ui: ['@fortawesome/fontawesome-svg-core', '@fortawesome/free-solid-svg-icons', '@fortawesome/free-regular-svg-icons', '@fortawesome/react-fontawesome'],
           },
         },
       },

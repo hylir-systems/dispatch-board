@@ -20,4 +20,3 @@ export interface BoardRouteObject {
   description?: string;
   showInMenu?: boolean;
 }
-

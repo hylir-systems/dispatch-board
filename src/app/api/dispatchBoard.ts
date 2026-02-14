@@ -1,13 +1,18 @@
-import type { DispatchBoardPageParams, FactoryInfo, DispatchBoardFetchResult, DispatchBoardFlightVO } from './types';
+import type {
+  DispatchBoardPageParams,
+  FactoryInfo,
+  DispatchBoardFetchResult,
+  DispatchBoardFlightVO,
+} from './types';
 import { fetchHttp } from '../utils/fetch';
 
 /**
  * API 请求说明：
- * 
+ *
  * 统一使用相对路径，通过代理服务器转发请求：
  * - 开发环境 (npm run dev): Vite 代理 → http://192.168.0.85:3680
  * - 生产环境 (Nginx):      Nginx 代理 → http://117.143.214.90:3680
- * 
+ *
  * 请求路径示例: /api/hylir-mes-center/...
  */
 

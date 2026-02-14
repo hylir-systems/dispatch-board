@@ -1,5 +1,11 @@
 import { useRef, useEffect, useState } from 'react';
-import { CheckCircle2, Clock, AlertCircle, FileText } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCheckCircle,
+  faClock,
+  faExclamationCircle,
+  faFileAlt,
+} from '@fortawesome/free-solid-svg-icons';
 
 interface Order {
   id: string;
@@ -22,19 +28,19 @@ const statusConfig = {
   shipped: {
     color: 'text-emerald-400',
     bg: 'bg-emerald-500/10 border-emerald-500/20',
-    icon: CheckCircle2,
+    icon: faCheckCircle,
     label: '已发货',
   },
   pending: {
     color: 'text-amber-400',
     bg: 'bg-amber-500/10 border-amber-500/20',
-    icon: Clock,
+    icon: faClock,
     label: '待发货',
   },
   delayed: {
     color: 'text-red-400',
     bg: 'bg-red-500/10 border-red-500/20',
-    icon: AlertCircle,
+    icon: faExclamationCircle,
     label: '延误',
   },
 };
@@ -199,14 +205,14 @@ export function ShippingTable({
                     <div
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium ${status.bg} ${status.color}`}
                     >
-                      <status.icon size={14} />
+                      <FontAwesomeIcon icon={status.icon} size="sm" />
                       {status.label}
                     </div>
                   </td>
                   <td className="p-4 text-center">
                     {order.hasReturn ? (
                       <span className="inline-flex items-center justify-center w-8 h-8 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">
-                        <FileText size={16} />
+                        <FontAwesomeIcon icon={faFileAlt} size="sm" />
                       </span>
                     ) : (
                       <span className="text-slate-600">-</span>
@@ -215,9 +221,9 @@ export function ShippingTable({
                   <td className="p-4">
                     <div className={`flex items-center gap-2 ${risk.color}`}>
                       {order.risk === 'none' ? (
-                        <CheckCircle2 size={16} />
+                        <FontAwesomeIcon icon={faCheckCircle} size="sm" />
                       ) : (
-                        <AlertCircle size={16} />
+                        <FontAwesomeIcon icon={faExclamationCircle} size="sm" />
                       )}
                       <span className="text-sm">{risk.label}</span>
                     </div>

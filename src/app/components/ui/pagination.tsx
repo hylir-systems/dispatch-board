@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faChevronRight, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 
 import { cn } from './utils';
 import { Button, buttonVariants } from './button';
@@ -61,7 +62,7 @@ function PaginationPrevious({ className, ...props }: React.ComponentProps<typeof
       className={cn('gap-1 px-2.5 sm:pl-2.5', className)}
       {...props}
     >
-      <ChevronLeftIcon />
+      <FontAwesomeIcon icon={faChevronLeft} />
       <span className="hidden sm:block">Previous</span>
     </PaginationLink>
   );
@@ -76,7 +77,7 @@ function PaginationNext({ className, ...props }: React.ComponentProps<typeof Pag
       {...props}
     >
       <span className="hidden sm:block">Next</span>
-      <ChevronRightIcon />
+      <FontAwesomeIcon icon={faChevronRight} />
     </PaginationLink>
   );
 }
@@ -89,7 +90,7 @@ function PaginationEllipsis({ className, ...props }: React.ComponentProps<'span'
       className={cn('flex size-9 items-center justify-center', className)}
       {...props}
     >
-      <MoreHorizontalIcon className="size-4" />
+      <FontAwesomeIcon icon={faEllipsisH} className="size-4" />
       <span className="sr-only">More pages</span>
     </span>
   );

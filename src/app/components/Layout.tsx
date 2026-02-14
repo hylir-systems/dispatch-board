@@ -2,7 +2,15 @@ import { useState, useEffect, useRef } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { routes } from '../router';
 import { cn } from './ui/utils';
-import { LayoutDashboard, Truck, Factory, Activity, Package, Gauge } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faTableCells,
+  faTruck,
+  faIndustry,
+  faChartLine,
+  faBox,
+  faGaugeHigh,
+} from '@fortawesome/free-solid-svg-icons';
 
 // 检测是否是 Android 设备
 function isAndroidDevice() {
@@ -11,13 +19,13 @@ function isAndroidDevice() {
 }
 
 // 图标映射
-const iconMap: Record<string, typeof LayoutDashboard> = {
-  LayoutDashboard,
-  Truck,
-  Factory,
-  Activity,
-  Package,
-  Gauge,
+const iconMap: Record<string, any> = {
+  LayoutDashboard: faTableCells,
+  Truck: faTruck,
+  Factory: faIndustry,
+  Activity: faChartLine,
+  Package: faBox,
+  Gauge: faGaugeHigh,
 };
 
 export function Layout() {
@@ -33,7 +41,10 @@ export function Layout() {
       // Android 电视：移除 viewport 缩放限制
       const viewport = document.querySelector('meta[name="viewport"]');
       if (viewport) {
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        viewport.setAttribute(
+          'content',
+          'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+        );
       }
     }
   }, []);
@@ -95,9 +106,9 @@ export function Layout() {
             .filter((route) => route.showInMenu !== false)
             .map((route) => {
               const iconKey = route.icon as keyof typeof iconMap;
-              const Icon = route.icon ? iconMap[iconKey] || LayoutDashboard : LayoutDashboard;
               const routePath = route.path || '/';
               const isActive = location.pathname === routePath;
+              const IconComponent = route.icon ? iconMap[iconKey] || faTableCells : faTableCells;
 
               return (
                 <li key={routePath}>
@@ -110,7 +121,7 @@ export function Layout() {
                         : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
                     )}
                   >
-                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    <FontAwesomeIcon icon={IconComponent} className="w-5 h-5 flex-shrink-0" />
                     <span className="hidden lg:block font-medium">{route.name}</span>
                   </button>
                 </li>
@@ -133,7 +144,7 @@ export function Layout() {
           isSidebarVisible ? 'opacity-0' : 'opacity-100'
         )}
         style={{
-          background: 'linear-gradient(90deg, rgba(20, 184, 166, 0.3) 0%, transparent 100%)'
+          background: 'linear-gradient(90deg, rgba(20, 184, 166, 0.3) 0%, transparent 100%)',
         }}
       />
 
